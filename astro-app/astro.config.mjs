@@ -17,7 +17,7 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
 	output: "hybrid",
 	adapter: vercel({
-		runtime: "nodejs20.x",
+		runtime: "nodejs18.x",
 	}),
 	integrations: [
 		sanity({

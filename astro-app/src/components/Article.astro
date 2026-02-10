@@ -1,0 +1,23 @@
+---
+import { formatDate } from "../utils";
+import type { Slug } from "@sanity/types";
+
+interface Props {
+	title: string;
+	createdAt: string;
+	excerpt?: string;
+	slug: Slug;
+	classNames?: string;
+}
+
+const { title, createdAt, excerpt, slug, classNames } = Astro.props;
+---
+
+<article class={`${classNames}`}>
+	<a class="flex flex-col gap-2" href={`/post/${slug?.current}`}>
+		<h3 class="hover:opacity-70 hover:underline transition-all duration-300 ease-out">{title}</h3>
+		<p class="italic text-base">{formatDate(createdAt)}</p>
+
+		{excerpt && <p>{excerpt}</p>}
+	</a>
+</article>

@@ -1,14 +1,67 @@
 ---
-import Card from "../components/Card.astro";
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
-import { getPosts } from "../utils/sanity";
+import SocialButton from "../components/SocialButton.astro";
+import Article from "../components/Article.astro";
 
-const posts = await getPosts();
+import { SOCIAL_LINKS } from "../constants";
+import { getLatestPosts } from "../utils/sanity";
+
+const posts = await getLatestPosts();
 ---
 
-<Layout title="Welcome to Astro.">
-  <section>
-    {posts.length ? posts.map((post) => <Card post={post} />) : <Welcome />}
-  </section>
+<Layout title="Home">
+	<section
+		class="my-8 flex flex-col gap-6 border-b pb-8 border-neutral-200 dark:border-neutral-700 lg:pb-12 lg:my-12"
+	>
+		<div class="flex">
+			<h1 class="title-underline relative">Hi, I'm Anton 👋</h1>
+		</div>
+
+		<p>
+			I'm a front-end developer focused on building and experimenting with modern web tools. This
+			blog is a space where I work on Astro + Sanity CMS, explore content modeling, and share things
+			I learn while building features and small projects.<br /><br />
+
+			Along the way, I write about crypto-related topics like Bitcoin and Ethereum, mostly as a way
+			to practice structuring content and explaining technical ideas clearly.<br /><br />
+
+			I started this blog to document my progress, stay consistent, and improve as a developer. It's
+			a work in progress — and that's exactly the point. Thanks for stopping by.
+		</p>
+
+		<ul>
+			<li class="flex items-center gap-3">
+				{
+					SOCIAL_LINKS.map((link) => (
+						<SocialButton
+							href={link.href}
+							hoverTarget="link"
+							label={link.label}
+							className="w-10 h-10 flex items-center rounded-10 justify-center bg-white border border-neutral-200 dark:bg-neutral-800 dark:border-neutral-700"
+						/>
+					))
+				}
+			</li>
+		</ul>
+	</section>
+
+	<section class="mb-8 lg:mb-12">
+		<div class="flex mb-8">
+			<h2 class="title-line-after relative">Latest Articles</h2>
+		</div>
+
+		<div class="flex flex-col gap-6 mb-8">
+			{
+				posts.map((post) => (
+					<Article title={post.title!} createdAt={post._createdAt} slug={post.slug} />
+				))
+			}
+		</div>
+
+		<a
+			href="/blog"
+			class="border-b-3 border-blue-700 hover:opacity-70 transition-all duration-300 ease-out"
+			>View all articles</a
+		>
+	</section>
 </Layout>

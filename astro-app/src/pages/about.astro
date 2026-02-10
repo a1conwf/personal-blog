@@ -1,0 +1,56 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SocialButton from "../components/SocialButton.astro";
+import { SOCIAL_LINKS } from "../constants";
+import aboutImg from "../assets/img/image-dubai.jpg";
+---
+
+<Layout title="About">
+	<section class="mt-8 mb-6 md:mb-8 lg:my-12">
+		<div class="flex flex-col gap-6">
+			<div class="flex">
+				<h1 class="title-underline relative">About Me</h1>
+			</div>
+
+			<p>
+				Hi, I'm Anton. This is a small practice blog I built to learn and experiment with Sanity CMS
+				and a modern content setup.
+
+				<br /><br />
+				I'm using this project to play around with content modeling, blog layouts, and publishing workflows,
+				while writing occasionally about crypto, Bitcoin, and Ethereum. The focus here is learning and
+				experimenting rather than predictions or financial advice.
+
+				<br /><br />
+				Outside of building things, I enjoy staying active — gym sessions, cycling, and generally keeping
+				a good balance between screens and real life.
+			</p>
+
+			<img src={aboutImg.src} alt="dubai-img" class="object-cover" />
+
+			<p>
+				This blog is a place to track my progress as a developer while learning more about crypto
+				and decentralized technologies along the way.
+			</p>
+
+			<div>
+				<h3 class="mb-4">Follow me</h3>
+
+				<ul>
+					<li class="flex items-center gap-3">
+						{
+							SOCIAL_LINKS.map((link) => (
+								<SocialButton
+									href={link.href}
+									hoverTarget="link"
+									label={link.label}
+									className="w-10 h-10 flex items-center rounded-10 justify-center bg-white border border-neutral-200 dark:bg-neutral-800 dark:border-neutral-700"
+								/>
+							))
+						}
+					</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+</Layout>

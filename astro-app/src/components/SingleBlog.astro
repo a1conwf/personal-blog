@@ -1,0 +1,36 @@
+---
+import type { Post } from "../utils/sanity";
+import { formatDate } from "../utils";
+import { PortableText } from "astro-portabletext";
+import { urlFor } from "../utils/image";
+
+interface Props {
+	post: Post;
+}
+
+const { post } = Astro.props;
+---
+
+<article>
+	<div class="my-8 pb-8 flex flex-col gap-3 border-b border-neutral-200 dark:border-neutral-700">
+		<h1>{post.title}</h1>
+		<p class="italic text-base">{formatDate(post._createdAt)}</p>
+		<p>{post.excerpt}</p>
+	</div>
+
+	<div>
+		<div class="flex flex-col gap-4">
+			<PortableText value={post.body} />
+		</div>
+
+		{
+			post.mainImage && (
+				<img
+					class="my-8 object-cover rounded-12"
+					src={urlFor(post.mainImage).url()}
+					alt={post.mainImage.alt}
+				/>
+			)
+		}
+	</div>
+</article>

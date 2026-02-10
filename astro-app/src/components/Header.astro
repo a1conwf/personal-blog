@@ -1,0 +1,156 @@
+---
+import { NAV_LINKS } from "../constants";
+
+import avatarImg from "../assets/img/image-avatar.jpeg";
+import iconMenu from "../assets/svg/icon-menu.svg";
+import iconMenuClose from "../assets/svg/icon-menu-close.svg";
+import iconMoon from "../assets/svg/icon-moon.svg";
+import iconSun from "../assets/svg/icon-sun.svg";
+
+const currentPath = Astro.url.pathname;
+---
+
+<header
+	class="header flex justify-between items-center rounded-10 p-[0.375rem] bg-white dark:bg-neutral-800 shadow-header dark:shadow-none border border-neutral-200 dark:border-neutral-700 sticky top-0 z-10 mt-4 md:mt-5 md:mx-0"
+>
+	<a href="/">
+		<img src={avatarImg.src} alt="avatar-img" class="w-10 h-10 object-cover rounded-10" />
+	</a>
+
+	<div class="flex items-center gap-[6px] md:gap-5">
+		<nav class="desktop-nav hidden md:block">
+			<ul class="flex items-center gap-6">
+				{
+					NAV_LINKS.map((link) => (
+						<li>
+							<a class={`nav-link ${currentPath === link.href ? "active" : ""}`} href={link.href}>
+								{link.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<button
+			class="menu-toggle md:hidden"
+			type="button"
+			aria-label="Toggle navigation"
+			aria-expanded="false"
+		>
+			<img src={iconMenu.src} alt="Open menu" class="menu-icon menu-icon--open" />
+			<img src={iconMenuClose.src} alt="Close menu" class="menu-icon menu-icon--close" />
+		</button>
+
+		<button class="theme-toggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+			<img src={iconMoon.src} alt="Switch to dark mode" class="theme-icon theme-icon--moon" />
+			<img src={iconSun.src} alt="Switch to light mode" class="theme-icon theme-icon--sun" />
+		</button>
+	</div>
+
+	<nav
+		class="mobile-nav absolute left-0 right-0 top-full mt-3 bg-white rounded-10 border border-neutral-200 shadow-header p-3 lg:hidden dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-none"
+	>
+		<ul class="flex flex-col gap-4">
+			{
+				NAV_LINKS.map((link) => (
+					<li class="pb-[0.375rem] border-b-2 border-b-neutral-200 last:border-b-0 dark:border-b-neutral-700">
+						<a class={`nav-link ${currentPath === link.href ? "active" : ""}`} href={link.href}>
+							{link.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
+</header>
+
+<script>
+	const root = document.documentElement;
+	const mq = window.matchMedia("(min-width: 1024px)");
+
+	let listeners: AbortController | null = null;
+
+	/* Close menu */
+	const closeMenu = (menuToggle?: Element | null, mobileNav?: Element | null) => {
+		menuToggle?.setAttribute("aria-expanded", "false");
+		mobileNav?.classList.remove("is-open");
+	};
+
+	/* Apply theme */
+	const applyTheme = (theme: string, themeToggle?: Element | null) => {
+		root.setAttribute("data-theme", theme);
+		themeToggle?.setAttribute("aria-pressed", String(theme === "dark"));
+		localStorage.setItem("theme", theme);
+	};
+
+	/* Initialize theme */
+	const initTheme = (themeToggle?: Element | null) => {
+		const stored = localStorage.getItem("theme");
+
+		if (stored === "light" || stored === "dark") {
+			applyTheme(stored, themeToggle);
+			return;
+		}
+
+		const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+		applyTheme(prefersDark ? "dark" : "light", themeToggle);
+	};
+
+	const setupHeader = () => {
+		listeners?.abort();
+		listeners = new AbortController();
+
+		const header = document.querySelector(".header");
+		const menuToggle = document.querySelector(".menu-toggle");
+		const mobileNav = document.querySelector(".mobile-nav");
+		const themeToggle = document.querySelector(".theme-toggle");
+
+		initTheme(themeToggle);
+
+		themeToggle?.addEventListener(
+			"click",
+			() => {
+				const isDark = root.getAttribute("data-theme") === "dark";
+				applyTheme(isDark ? "light" : "dark", themeToggle);
+			},
+			{ signal: listeners.signal },
+		);
+
+		menuToggle?.addEventListener(
+			"click",
+			() => {
+				const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+				menuToggle.setAttribute("aria-expanded", String(!isOpen));
+				mobileNav?.classList.toggle("is-open");
+			},
+			{ signal: listeners.signal },
+		);
+
+		document.addEventListener(
+			"click",
+			(event) => {
+				const target = event.target;
+				const isOpen = menuToggle?.getAttribute("aria-expanded") === "true";
+
+				if (isOpen && target instanceof Node && header && !header.contains(target)) {
+					closeMenu(menuToggle, mobileNav);
+				}
+			},
+			{ signal: listeners.signal },
+		);
+
+		mq.addEventListener(
+			"change",
+			(event) => {
+				if (event.matches) {
+					closeMenu(menuToggle, mobileNav);
+				}
+			},
+			{ signal: listeners.signal },
+		);
+	};
+
+	document.addEventListener("astro:after-swap", setupHeader);
+	setupHeader();
+</script>

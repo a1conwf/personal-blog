@@ -1,27 +1,33 @@
 {
-  "name": "personal-blog",
-  "description": "Minimal Astro site with Sanity Studio",
-  "scripts": {
-    "dev": "concurrently \"npm run dev --workspace=astro-app\" \"npm run dev --workspace=studio\""
-  },
-  "keywords": [
-    "Sanity",
-    "Astro",
-    "Headless CMS",
-    "Visual Editing",
-    "Live Content API (LCAPI)",
-    "Real-time"
-  ],
-  "bugs": {
-    "url": "https://github.com/sanity-io/sanity-template-astro-clean/issues"
-  },
-  "homepage": "https://github.com/sanity-io/sanity-template-astro-clean#readme",
-  "workspaces": [
-    "studio",
-    "astro-app"
-  ],
-  "devDependencies": {
-    "concurrently": "^9.1.0"
-  },
-  "type": "module"
+	"name": "personal-blog",
+	"description": "Minimal Astro site with Sanity Studio",
+	"scripts": {
+		"dev": "concurrently \"npm run dev --workspace=astro-app\" \"npm run dev --workspace=studio\""
+	},
+	"keywords": [
+		"Sanity",
+		"Astro",
+		"Headless CMS",
+		"Visual Editing",
+		"Live Content API (LCAPI)",
+		"Real-time"
+	],
+	"bugs": {
+		"url": "https://github.com/sanity-io/sanity-template-astro-clean/issues"
+	},
+	"homepage": "https://github.com/sanity-io/sanity-template-astro-clean#readme",
+	"workspaces": [
+		"studio",
+		"astro-app"
+	],
+	"devDependencies": {
+		"concurrently": "^9.1.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"@tailwindcss/postcss": "^4.1.18",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"styled-components": "^6.3.9"
+	}
 }

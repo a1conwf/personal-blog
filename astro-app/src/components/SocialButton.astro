@@ -1,0 +1,23 @@
+---
+interface Props {
+	href: string;
+	label: string;
+	className?: string;
+	hoverTarget?: "link" | "icon";
+}
+
+const { href, label, className, hoverTarget = "icon" } = Astro.props;
+
+const hoverClass = "hover:scale-110 transition-all duration-300 ease-out";
+
+const linkHoverClass = hoverTarget === "link" ? hoverClass : "";
+const iconHoverClass = hoverTarget === "icon" ? hoverClass : "";
+---
+
+<a href={href} target="_blank" class={`${linkHoverClass} ${className}`}>
+	<img
+		src={`/src/assets/svg/logo-${label}.svg`}
+		alt={label}
+		class={`w-4 h-4 object-cover dark:invert ${iconHoverClass}`}
+	/>
+</a>

@@ -1,0 +1,33 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getAllPosts } from "../utils/sanity";
+import Article from "../components/Article.astro";
+
+const posts = await getAllPosts();
+---
+
+<Layout title="Blog">
+	<section class="mt-8 mb-6 lg:mt-12">
+		<div class="flex mb-2">
+			<h1 class="title-line-after relative">My Articles</h1>
+		</div>
+
+		<p class="mb-6">
+			Below are all my recent blog posts. Click on any title to read the full article.
+		</p>
+
+		<div>
+			{
+				posts.map((post) => (
+					<Article
+						title={post.title!}
+						createdAt={post._createdAt}
+						excerpt={post.excerpt}
+						slug={post.slug}
+						classNames="py-5 border-t border-b border-neutral-200 dark:border-neutral-700 last:border-0"
+					/>
+				))
+			}
+		</div>
+	</section>
+</Layout>

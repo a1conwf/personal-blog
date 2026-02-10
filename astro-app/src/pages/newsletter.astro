@@ -1,0 +1,97 @@
+---
+import Layout from "../layouts/Layout.astro";
+import iconSuccess from "../assets/svg/icon-success.svg";
+import iconError from "../assets/svg/icon-error.svg";
+---
+
+<Layout title="Newsletter">
+	<section class="mt-8 md:mt-12">
+		<div class="flex flex-col gap-4 mb-6">
+			<h1>Newsletter</h1>
+
+			<p>
+				Want to follow along as I build and experiment with this blog? Subscribe to the newsletter.
+			</p>
+
+			<p>
+				I send occasional updates when I publish new posts or try something new with Sanity CMS,
+				Astro, or crypto-related content around Bitcoin and Ethereum. No marketing emails, no hype —
+				just updates from a project I'm actively learning from.
+			</p>
+
+			<p class="text-neutral-700 text-xl font-semibold dark:text-white">
+				If you're a developer, learning crypto, or simply curious how a blog like this is built,
+				feel free to join in 🙂
+			</p>
+		</div>
+
+		<form class="newsletter-form mb-2" novalidate>
+			<div class="flex flex-col gap-2 mb-4">
+				<label for="email">Email Address</label>
+				<input
+					type="email"
+					name="email"
+					id="email"
+					autocomplete="off"
+					placeholder="email@example.com"
+					required
+				/>
+				<span class="success-msg hidden items-center gap-2 text-green-500 text-base">
+					<img src={iconSuccess.src} alt="success-icon" />
+					You're subscribed! Check your inbox for updates.
+				</span>
+
+				<span class="error-msg hidden items-center gap-2 text-red-500 text-base">
+					<img src={iconError.src} alt="error-icon" />
+					Please enter a valid email address.
+				</span>
+			</div>
+
+			<button type="submit" class="btn-primary">Stay updated</button>
+		</form>
+
+		<p class="text-base">Unsubscribe anytime. No spam, I promise 🙂</p>
+	</section>
+</Layout>
+
+<script>
+	let listeners: AbortController | null = null;
+
+	const setupNewsletterForm = () => {
+		listeners?.abort();
+		listeners = new AbortController();
+
+		const form = document.querySelector(".newsletter-form");
+		const emailInput = document.querySelector("#email");
+		const successMsg = document.querySelector(".success-msg");
+		const errorMsg = document.querySelector(".error-msg");
+
+		if (form && emailInput instanceof HTMLInputElement) {
+			form.addEventListener(
+				"submit",
+				(event) => {
+					event.preventDefault();
+
+					const isValid = emailInput.checkValidity();
+
+					emailInput.classList.remove("success", "invalid");
+					successMsg?.classList.add("hidden");
+					errorMsg?.classList.add("hidden");
+
+					if (isValid) {
+						emailInput.classList.add("success");
+						successMsg?.classList.remove("hidden");
+						return;
+					}
+
+					emailInput.classList.add("invalid");
+					errorMsg?.classList.remove("hidden");
+				},
+				{ signal: listeners.signal },
+			);
+		}
+	};
+
+	document.addEventListener("astro:after-swap", setupNewsletterForm);
+	setupNewsletterForm();
+</script>
